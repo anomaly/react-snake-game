@@ -152,7 +152,7 @@ export const useSnakeGame = (
             }
 
             const possibleApple = gridArray.filter(
-                (position) => position !== null
+                position => position !== null
             ) as Position[];
 
             return possibleApple[
@@ -306,12 +306,12 @@ export const useSnakeGame = (
 
     const countRef = useRef<number>(0);
 
-    useAnimationFrame((deltaTime) => {
+    useAnimationFrame(deltaTime => {
         countRef.current += currSpeed / deltaTime;
 
         if (countRef.current < 10) {
             if (smoothAnimations) {
-                setGameState((prevGameState) => {
+                setGameState(prevGameState => {
                     const { snake, direction } = prevGameState;
 
                     if (snake && direction) {
@@ -363,7 +363,7 @@ export const useSnakeGame = (
 
         countRef.current = 0;
 
-        setGameState((prevGameState) => {
+        setGameState(prevGameState => {
             const { snake, apple, direction } = prevGameState;
 
             if (snake && apple && direction) {
@@ -434,7 +434,7 @@ export const useSnakeGame = (
     const moveSnake = useCallback(
         (e: KeyboardEvent<HTMLCanvasElement>) => {
             if (KEY_TO_DIRECTION_MAPPINGS.hasOwnProperty(e.key)) {
-                setGameState((prevGameState) => {
+                setGameState(prevGameState => {
                     // ignore if same direction or same axis (cannot go backwards)
                     const prevDirection = prevGameState.direction;
                     const nextDirection = KEY_TO_DIRECTION_MAPPINGS[e.key];

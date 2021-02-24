@@ -1,8 +1,8 @@
 import React from "react";
 import * as ReactDOM from "react-dom";
-import { Default as SnakeGame } from "../stories/SnakeGame.stories";
+import { SnakeGame } from "../src";
 
-describe("Example", () => {
+describe("Default", () => {
     it("renders without crashing", () => {
         const div = document.createElement("div");
         ReactDOM.render(<SnakeGame />, div);

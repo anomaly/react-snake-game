@@ -12,7 +12,7 @@ const useAnimationFrame = (callback: CallbackFn, use: boolean = true) => {
     }, [callback]);
 
     const animate = useCallback(
-        (time) => {
+        time => {
             if (use) {
                 requestRef.current = requestAnimationFrame(animate);
                 callbackRef.current &&

@@ -13,7 +13,7 @@ export type Props = {
     appleColor: SnakeGameConfig["colors"]["apple"];
 } & Omit<SnakeGameConfig, "numOfTiles" | "colors">;
 
-const SnakeGame = ({
+export const SnakeGame = ({
     className,
     numOfTilesX,
     numOfTilesY,
@@ -45,7 +45,7 @@ const SnakeGame = ({
     });
 
     const handleKeyDown = useCallback(
-        (event) => {
+        event => {
             if (event.key === " " && !state.started) {
                 canvasRef.current && canvasRef.current.focus();
                 methods.resetGame(true);
@@ -77,5 +77,3 @@ SnakeGame.defaultProps = {
     snakeColors: ["#216e39", "#30a14e", "#40c463", "#9be9a8"],
     appleColor: "#ea4a5a",
 };
-
-export default SnakeGame;

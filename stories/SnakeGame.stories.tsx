@@ -1,6 +1,6 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react";
-import SnakeGame, { Props } from "../src";
+import { SnakeGame, Props } from "../src";
 
 export default {
     title: "Snake Game",
@@ -19,7 +19,7 @@ export default {
     },
 } as Meta;
 
-const Template: Story<Props> = (args) => <SnakeGame {...args} />;
+const Template: Story<Props> = args => <SnakeGame {...args} />;
 
 export const Default = Template.bind({});
 

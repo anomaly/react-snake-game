@@ -1,7 +1,7 @@
 name: Build & Deploy Storybook
 on:
     push:
-        paths: ["stories/**", "src/**"]
+        paths: [".storybook/**", "stories/**", "src/**"]
 jobs:
     build-and-deploy:
         name: Build & deploy storybook to gh pages

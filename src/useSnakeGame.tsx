@@ -116,22 +116,32 @@ export const useSnakeGame = (
 
     const generateRandomSnake = useCallback((): Snake => {
         // Appear in bottom left
-        const thres = 0.5;
+        const min_thres = 0.5;
+        const max_thres = 0.9;
         const maxX = numOfTiles.x - 1;
         const maxY = numOfTiles.y - 1;
         const snakeHead: Position = [
-            getRandomIntMinMax(maxX * thres, maxX),
-            getRandomIntMinMax(maxY * thres, maxY),
+            getRandomIntMinMax(maxX * min_thres, maxX * max_thres),
+            getRandomIntMinMax(maxY * min_thres, maxY * max_thres),
         ];
 
         let snakeTail: Position;
 
-        if (snakeHead[0] + 1 < maxX) {
-            snakeTail = [snakeHead[0] + 1, snakeHead[1]];
-        } else if (snakeHead[1] + 1 < maxY) {
-            snakeTail = [snakeHead[0], snakeHead[1] + 1];
-        } else {
-            snakeTail = [snakeHead[0] - 1, snakeHead[1]];
+        const randomPosition = getRandomInt(3);
+
+        switch (randomPosition) {
+            case 0:
+                snakeTail = [snakeHead[0] + 1, snakeHead[1]];
+                break;
+            case 1:
+                snakeTail = [snakeHead[0], snakeHead[1] + 1];
+                break;
+            case 2:
+                snakeTail = [snakeHead[0] - 1, snakeHead[1]];
+                break;
+            case 3:
+            default:
+                snakeTail = [snakeHead[0], snakeHead[1] - 1];
         }
 
         return [snakeHead, snakeTail];
@@ -435,13 +445,19 @@ export const useSnakeGame = (
         (e: KeyboardEvent<HTMLCanvasElement>) => {
             if (KEY_TO_DIRECTION_MAPPINGS.hasOwnProperty(e.key)) {
                 setGameState(prevGameState => {
-                    // ignore if same direction or same axis (cannot go backwards)
                     const prevDirection = prevGameState.direction;
                     const nextDirection = KEY_TO_DIRECTION_MAPPINGS[e.key];
 
-                    if (prevDirection === nextDirection)
+                    if (
+                        prevDirection &&
+                        nextDirection &&
+                        prevDirection[0] === nextDirection[0] &&
+                        prevDirection[1] === nextDirection[1]
+                    ) {
                         setCurrSpeed(multiplier * speed);
+                    }
 
+                    // ignore if same direction or same axis (cannot go backwards)
                     return prevDirection === nextDirection ||
                         (prevDirection &&
                             prevDirection[0] === 0 &&

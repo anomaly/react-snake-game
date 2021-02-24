@@ -6,6 +6,7 @@
         "url": "https://github.com/anomaly/react-snake-game"
     },
     "version": "0.1.0",
+    "description": "A novelty snake game built using React for the new Anomaly website.",
     "license": "Apache-2.0",
     "licenses": [
         {

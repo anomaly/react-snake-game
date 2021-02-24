@@ -19,7 +19,7 @@ export default {
     },
 } as Meta;
 
-const Template: Story<Props> = args => <SnakeGame {...args} />;
+const Template: Story<Props> = (args) => <SnakeGame {...args} />;
 
 export const Default = Template.bind({});
 

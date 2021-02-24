@@ -1,9 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    ComponentProps,
+} from "react";
 import { SnakeGameConfig, useSnakeGame } from "./useSnakeGame";
 
 export { useSnakeGame };
 
-export type Props = {
+export type SnakeGameProps = {
     className?: string;
     numOfTilesX: SnakeGameConfig["numOfTiles"]["x"];
     numOfTilesY: SnakeGameConfig["numOfTiles"]["y"];
@@ -11,7 +17,8 @@ export type Props = {
     borderColor: SnakeGameConfig["colors"]["border"];
     snakeColors: SnakeGameConfig["colors"]["snake"];
     appleColor: SnakeGameConfig["colors"]["apple"];
-} & Omit<SnakeGameConfig, "numOfTiles" | "colors">;
+} & Omit<SnakeGameConfig, "numOfTiles" | "colors"> &
+    ComponentProps<"canvas">;
 
 export const SnakeGame = ({
     className,
@@ -21,8 +28,12 @@ export const SnakeGame = ({
     borderColor,
     snakeColors,
     appleColor,
+    smoothAnimations,
+    speed,
+    multiplier,
+    tileSize,
     ...rest
-}: Props) => {
+}: SnakeGameProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const numOfTiles = useMemo(
@@ -34,7 +45,10 @@ export const SnakeGame = ({
     );
 
     const { props: canvasProps, state, methods } = useSnakeGame(canvasRef, {
-        ...rest,
+        smoothAnimations,
+        speed,
+        multiplier,
+        tileSize,
         numOfTiles,
         colors: {
             tile: tileColor,
@@ -45,10 +59,11 @@ export const SnakeGame = ({
     });
 
     const handleKeyDown = useCallback(
-        event => {
+        (event) => {
             if (event.key === " " && !state.started) {
                 canvasRef.current && canvasRef.current.focus();
                 methods.resetGame(true);
+                event.preventDefault();
             }
         },
         [methods, state.started]
@@ -62,7 +77,14 @@ export const SnakeGame = ({
         };
     }, [handleKeyDown]);
 
-    return <canvas className={className} ref={canvasRef} {...canvasProps} />;
+    return (
+        <canvas
+            className={className}
+            ref={canvasRef}
+            {...canvasProps}
+            {...rest}
+        />
+    );
 };
 
 SnakeGame.defaultProps = {

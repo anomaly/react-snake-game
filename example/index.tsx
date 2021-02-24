@@ -22,7 +22,7 @@ const App = () => {
     });
 
     const handleKeyDown = React.useCallback(
-        event => {
+        (event) => {
             if (event.key === " " && !state.started) {
                 canvasRef.current && canvasRef.current.focus();
                 methods.resetGame();

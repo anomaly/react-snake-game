@@ -31,3 +31,24 @@ SmoothAnimations.args = {
     ...Default.args,
     smoothAnimations: true,
 };
+
+export const DifferentColors = Template.bind({});
+
+DifferentColors.args = {
+    ...Default.args,
+    tileColor: "#111827",
+    borderColor: "#9CA3AF",
+    snakeColors: [
+        "#4C1D95",
+        "#5B21B6",
+        "#6D28D9",
+        "#7C3AED",
+        "#8B5CF6",
+        "#A78BFA",
+        "#C4B5FD",
+        "#DDD6FE",
+        "#EDE9FE",
+        "#F5F3FF",
+    ],
+    appleColor: "#FCD34D",
+};

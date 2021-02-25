@@ -490,8 +490,12 @@ export const useSnakeGame = (
     );
 
     useEffect(() => {
-        if (tileSize && numOfTiles) resetGame(false);
-    }, [tileSize, numOfTiles, resetGame]);
+        if (numOfTiles) resetGame(false);
+    }, [numOfTiles, resetGame]);
+
+    useEffect(() => {
+        if (tileSize && !gameState.started) resetGame(false);
+    }, [gameState.started, resetGame, tileSize]);
 
     const [props, setProps] = useState({
         role: "button",

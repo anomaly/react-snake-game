@@ -7,6 +7,7 @@ import React, {
     useRef,
     useState,
 } from "react";
+import { useResizeDetector } from "react-resize-detector";
 import { SnakeGameConfig, useSnakeGame } from "./useSnakeGame";
 
 export { useSnakeGame };
@@ -81,42 +82,57 @@ export const SnakeGame = ({
         };
     }, [handleKeyDown]);
 
+    const { width, height } = useResizeDetector({ targetRef: canvasRef });
+
     useEffect(() => {
         const currCanvas = canvasRef.current;
         const context = currCanvas?.getContext("2d");
 
-        if (currCanvas && context) {
+        if (currCanvas && context && width && height && !tileSize) {
             if (!tileSize) {
                 setAutoTileSize(
-                    Math.min(
-                        currCanvas.clientWidth / numOfTilesX,
-                        currCanvas.clientHeight / numOfTilesY
-                    )
+                    Math.min(width / numOfTilesX, height / numOfTilesY)
                 );
-            } else {
-                const originalWidth = canvasProps.width;
-                const originalHeight = canvasProps.height;
-
-                const dimensions = contain(
-                    currCanvas.clientWidth,
-                    currCanvas.clientHeight,
-                    originalWidth,
-                    originalHeight
-                );
-
-                const devicePixelRatio = window.devicePixelRatio || 1;
-
-                currCanvas.width = dimensions.width * devicePixelRatio;
-                currCanvas.height = dimensions.height * devicePixelRatio;
-
-                const ratio =
-                    Math.min(
-                        currCanvas.clientWidth / originalWidth,
-                        currCanvas.clientHeight / originalHeight
-                    ) * devicePixelRatio;
-
-                context.scale(ratio, ratio);
             }
+        }
+    }, [
+        width,
+        height,
+        tileSize,
+        numOfTilesX,
+        numOfTilesY,
+        canvasProps.width,
+        canvasProps.height,
+        state.started,
+    ]);
+
+    useEffect(() => {
+        const currCanvas = canvasRef.current;
+        const context = currCanvas?.getContext("2d");
+
+        if (currCanvas && context && tileSize) {
+            const originalWidth = canvasProps.width;
+            const originalHeight = canvasProps.height;
+
+            const dimensions = contain(
+                currCanvas.clientWidth,
+                currCanvas.clientHeight,
+                originalWidth,
+                originalHeight
+            );
+
+            const devicePixelRatio = window.devicePixelRatio || 1;
+
+            currCanvas.width = dimensions.width * devicePixelRatio;
+            currCanvas.height = dimensions.height * devicePixelRatio;
+
+            const ratio =
+                Math.min(
+                    currCanvas.clientWidth / originalWidth,
+                    currCanvas.clientHeight / originalHeight
+                ) * devicePixelRatio;
+
+            context.scale(ratio, ratio);
         }
     }, [
         tileSize,
@@ -124,6 +140,7 @@ export const SnakeGame = ({
         numOfTilesY,
         canvasProps.width,
         canvasProps.height,
+        state.started,
     ]);
 
     return (

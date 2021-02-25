@@ -107,6 +107,7 @@
         "eslint": "7.20.0"
     },
     "dependencies": {
-        "intrinsic-scale": "^3.0.4"
+        "intrinsic-scale": "^3.0.4",
+        "react-resize-detector": "^6.6.0"
     }
 }

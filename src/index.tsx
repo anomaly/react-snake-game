@@ -1,14 +1,13 @@
+import { contain } from "intrinsic-scale";
 import React, {
+    ComponentProps,
     useCallback,
     useEffect,
     useMemo,
     useRef,
-    ComponentProps,
-    useLayoutEffect,
     useState,
 } from "react";
 import { SnakeGameConfig, useSnakeGame } from "./useSnakeGame";
-import { contain } from "intrinsic-scale";
 
 export { useSnakeGame };
 
@@ -82,22 +81,19 @@ export const SnakeGame = ({
         };
     }, [handleKeyDown]);
 
-    useLayoutEffect(() => {
-        if (!tileSize) {
-            const currCanvas = canvasRef.current;
-            const context = currCanvas?.getContext("2d");
-            if (currCanvas && context) {
+    useEffect(() => {
+        const currCanvas = canvasRef.current;
+        const context = currCanvas?.getContext("2d");
+
+        if (currCanvas && context) {
+            if (!tileSize) {
                 setAutoTileSize(
                     Math.min(
                         currCanvas.clientWidth / numOfTilesX,
                         currCanvas.clientHeight / numOfTilesY
                     )
                 );
-            }
-        } else {
-            const currCanvas = canvasRef.current;
-            const context = currCanvas?.getContext("2d");
-            if (currCanvas && context) {
+            } else {
                 const originalWidth = canvasProps.width;
                 const originalHeight = canvasProps.height;
 

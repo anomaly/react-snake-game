@@ -444,6 +444,7 @@ export const useSnakeGame = (
 
     const moveSnake = useCallback(
         (e: KeyboardEvent<HTMLCanvasElement>) => {
+            e.preventDefault();
             if (KEY_TO_DIRECTION_MAPPINGS.hasOwnProperty(e.key)) {
                 setGameState((prevGameState) => {
                     const prevDirection = prevGameState.direction;
@@ -479,9 +480,13 @@ export const useSnakeGame = (
         [multiplier, speed]
     );
 
-    const handleKeyUp = useCallback(() => {
-        setCurrSpeed(speed);
-    }, [speed]);
+    const handleKeyUp = useCallback(
+        (e: KeyboardEvent<HTMLCanvasElement>) => {
+            e.preventDefault();
+            setCurrSpeed(speed);
+        },
+        [speed]
+    );
 
     useEffect(() => {
         if (tileSize && numOfTiles) resetGame(false);

@@ -66,9 +66,9 @@ export const SnakeGame = ({
     const handleKeyDown = useCallback(
         (event) => {
             if (event.key === " " && !state.started) {
+                event.preventDefault();
                 canvasRef.current?.focus();
                 methods.resetGame(true);
-                event.preventDefault();
             }
         },
         [methods, state.started]

@@ -1,5 +1,9 @@
 module.exports = {
     parser: "@typescript-eslint/parser",
+    parserOptions: {
+        ecmaVersion: 6,
+        sourceType: "module",
+    },
     plugins: [
         "@typescript-eslint",
         "import",
@@ -17,5 +21,13 @@ module.exports = {
         react: {
             version: "detect",
         },
+    },
+    rules: {
+        "prettier/prettier": [
+            "error",
+            {
+                endOfLine: "auto",
+            },
+        ],
     },
 };

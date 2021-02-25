@@ -213,105 +213,106 @@ export const useSnakeGame = (
         [checkIfWillCollideWithWall]
     );
 
-    // Draw
-    useEffect(() => {
-        const currCanvas = canvasRef.current;
-        if (currCanvas) {
-            const context = currCanvas.getContext("2d");
-            if (context) {
-                context.fillStyle = colors.tile;
-                context.fillRect(
-                    0,
-                    0,
-                    context.canvas.width,
-                    context.canvas.height
-                );
+    const drawCanvas = useCallback(
+        (context: CanvasRenderingContext2D) => {
+            context.fillStyle = colors.tile;
+            context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
-                // Grid
-                for (let x = 0; x <= numOfTiles.x; x++) {
-                    const posX = x * tileSize;
-                    context.beginPath();
-                    context.moveTo(posX, 0);
-                    context.lineTo(posX, context.canvas.height);
-                    context.strokeStyle = colors.border;
-                    context.stroke();
-                }
-
-                for (let y = 0; y <= numOfTiles.y; y++) {
-                    const posY = y * tileSize;
-                    context.beginPath();
-                    context.moveTo(0, posY);
-                    context.lineTo(context.canvas.width, posY);
-                    context.strokeStyle = colors.border;
-                    context.stroke();
-                }
-
-                // Apple
-                if (gameState.apple) {
-                    context.beginPath();
-                    context.fillStyle = colors.apple;
-                    context.arc(
-                        gameState.apple[0] * tileSize + tileSize / 2,
-                        gameState.apple[1] * tileSize + tileSize / 2,
-                        tileSize / 2,
-                        0,
-                        2 * Math.PI
-                    );
-                    context.fill();
-                }
-
-                // Snake
-                const snake = gameState.snakeInProgress ?? gameState.snake;
-
-                snake &&
-                    snake.forEach(([x, y]: Position, index: number) => {
-                        if (snake) {
-                            context.fillStyle =
-                                snake.length <= colors.snake.length
-                                    ? colors.snake[index]
-                                    : colors.snake[
-                                          Math.floor(
-                                              (colors.snake.length * index) /
-                                                  snake.length
-                                          )
-                                      ];
-
-                            context.fillRect(
-                                x * tileSize,
-                                y * tileSize,
-                                tileSize,
-                                tileSize
-                            );
-                        }
-                    });
+            // Grid
+            for (let x = 0; x <= numOfTiles.x; x++) {
+                const posX = x * tileSize;
+                context.beginPath();
+                context.moveTo(posX, 0);
+                context.lineTo(posX, context.canvas.height);
+                context.strokeStyle = colors.border;
+                context.stroke();
             }
+
+            for (let y = 0; y <= numOfTiles.y; y++) {
+                const posY = y * tileSize;
+                context.beginPath();
+                context.moveTo(0, posY);
+                context.lineTo(context.canvas.width, posY);
+                context.strokeStyle = colors.border;
+                context.stroke();
+            }
+
+            // Apple
+            if (gameState.apple) {
+                context.beginPath();
+                context.fillStyle = colors.apple;
+                context.arc(
+                    gameState.apple[0] * tileSize + tileSize / 2,
+                    gameState.apple[1] * tileSize + tileSize / 2,
+                    tileSize / 2,
+                    0,
+                    2 * Math.PI
+                );
+                context.fill();
+            }
+
+            // Snake
+            const snake = gameState.snakeInProgress ?? gameState.snake;
+
+            snake &&
+                snake.forEach(([x, y]: Position, index: number) => {
+                    if (snake) {
+                        context.fillStyle =
+                            snake.length <= colors.snake.length
+                                ? colors.snake[index]
+                                : colors.snake[
+                                      Math.floor(
+                                          (colors.snake.length * index) /
+                                              snake.length
+                                      )
+                                  ];
+
+                        context.fillRect(
+                            x * tileSize,
+                            y * tileSize,
+                            tileSize,
+                            tileSize
+                        );
+                    }
+                });
+        },
+        [
+            colors.apple,
+            colors.border,
+            colors.snake,
+            colors.tile,
+            gameState.apple,
+            gameState.snake,
+            gameState.snakeInProgress,
+            numOfTiles.x,
+            numOfTiles.y,
+            tileSize,
+        ]
+    );
+
+    const clearCanvas = useCallback((context: CanvasRenderingContext2D) => {
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    }, []);
+
+    useEffect(() => {
+        if (tileSize && numOfTiles.x && numOfTiles.y) {
+            const currCanvas = canvasRef.current;
+            const context = currCanvas?.getContext("2d");
+            context && drawCanvas(context);
+
+            return () => {
+                context && clearCanvas(context);
+            };
         }
 
-        return () => {
-            if (currCanvas) {
-                const context = currCanvas.getContext("2d");
-                if (context) {
-                    context.clearRect(
-                        0,
-                        0,
-                        context.canvas.width,
-                        context.canvas.height
-                    );
-                }
-            }
-        };
+        return;
     }, [
         canvasRef,
-        colors.tile,
-        colors.border,
-        colors.apple,
-        colors.snake,
-        gameState.apple,
-        gameState.snake,
+        drawCanvas,
+        clearCanvas,
+        tileSize,
         numOfTiles.x,
         numOfTiles.y,
-        tileSize,
-        gameState.snakeInProgress,
     ]);
 
     const countRef = useRef<number>(0);
@@ -491,8 +492,8 @@ export const useSnakeGame = (
         tabIndex: 0,
         onKeyDown: moveSnake,
         onKeyUp: handleKeyUp,
-        width: `${tileSize * numOfTiles.x}px`,
-        height: `${tileSize * numOfTiles.y}px`,
+        width: tileSize * numOfTiles.x,
+        height: tileSize * numOfTiles.y,
     });
 
     useEffect(() => {
@@ -501,8 +502,8 @@ export const useSnakeGame = (
             tabIndex: 0,
             onKeyDown: moveSnake,
             onKeyUp: handleKeyUp,
-            width: `${tileSize * numOfTiles.x}px`,
-            height: `${tileSize * numOfTiles.y}px`,
+            width: tileSize * numOfTiles.x,
+            height: tileSize * numOfTiles.y,
         });
     }, [handleKeyUp, moveSnake, numOfTiles.x, numOfTiles.y, tileSize]);
 
@@ -511,6 +512,8 @@ export const useSnakeGame = (
         state: gameState,
         methods: {
             resetGame,
+            drawCanvas,
+            clearCanvas,
         },
     };
 };

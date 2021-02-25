@@ -1,6 +1,7 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react";
-import { SnakeGame, Props } from "../src";
+import { SnakeGame, SnakeGameProps } from "../src";
+import "./stories.css";
 
 export default {
     title: "Snake Game",
@@ -19,7 +20,7 @@ export default {
     },
 } as Meta;
 
-const Template: Story<Props> = (args) => <SnakeGame {...args} />;
+const Template: Story<SnakeGameProps> = (args) => <SnakeGame {...args} />;
 
 export const Default = Template.bind({});
 
@@ -51,4 +52,17 @@ DifferentColors.args = {
         "#F5F3FF",
     ],
     appleColor: "#FCD34D",
+};
+
+export const FitContainer: Story<SnakeGameProps> = (args) => (
+    <div className="fit-container">
+        <SnakeGame {...args} />
+    </div>
+);
+
+FitContainer.args = {
+    ...Default.args,
+    tileSize: 0,
+    numOfTilesX: 100,
+    numOfTilesY: 40,
 };

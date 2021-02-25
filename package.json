@@ -74,6 +74,7 @@
         "@storybook/addons": "^6.1.19",
         "@storybook/react": "^6.1.19",
         "@storybook/theming": "^6.1.19",
+        "@types/intrinsic-scale": "^3.0.0",
         "@types/react": "^17.0.2",
         "@types/react-dom": "^17.0.1",
         "@typescript-eslint/eslint-plugin": "^4.15.2",
@@ -104,5 +105,8 @@
     },
     "resolutions": {
         "eslint": "7.20.0"
+    },
+    "dependencies": {
+        "intrinsic-scale": "^3.0.4"
     }
 }

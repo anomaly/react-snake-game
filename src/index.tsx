@@ -4,8 +4,11 @@ import React, {
     useMemo,
     useRef,
     ComponentProps,
+    useLayoutEffect,
+    useState,
 } from "react";
 import { SnakeGameConfig, useSnakeGame } from "./useSnakeGame";
+import { contain } from "intrinsic-scale";
 
 export { useSnakeGame };
 
@@ -44,11 +47,13 @@ export const SnakeGame = ({
         [numOfTilesX, numOfTilesY]
     );
 
+    const [autoTileSize, setAutoTileSize] = useState<number | undefined>();
+
     const { props: canvasProps, state, methods } = useSnakeGame(canvasRef, {
         smoothAnimations,
         speed,
         multiplier,
-        tileSize,
+        tileSize: autoTileSize ?? tileSize,
         numOfTiles,
         colors: {
             tile: tileColor,
@@ -61,7 +66,7 @@ export const SnakeGame = ({
     const handleKeyDown = useCallback(
         (event) => {
             if (event.key === " " && !state.started) {
-                canvasRef.current && canvasRef.current.focus();
+                canvasRef.current?.focus();
                 methods.resetGame(true);
                 event.preventDefault();
             }
@@ -77,8 +82,57 @@ export const SnakeGame = ({
         };
     }, [handleKeyDown]);
 
+    useLayoutEffect(() => {
+        if (!tileSize) {
+            const currCanvas = canvasRef.current;
+            const context = currCanvas?.getContext("2d");
+            if (currCanvas && context) {
+                setAutoTileSize(
+                    Math.min(
+                        currCanvas.clientWidth / numOfTilesX,
+                        currCanvas.clientHeight / numOfTilesY
+                    )
+                );
+            }
+        } else {
+            const currCanvas = canvasRef.current;
+            const context = currCanvas?.getContext("2d");
+            if (currCanvas && context) {
+                const originalWidth = canvasProps.width;
+                const originalHeight = canvasProps.height;
+
+                const dimensions = contain(
+                    currCanvas.clientWidth,
+                    currCanvas.clientHeight,
+                    originalWidth,
+                    originalHeight
+                );
+
+                const devicePixelRatio = window.devicePixelRatio || 1;
+
+                currCanvas.width = dimensions.width * devicePixelRatio;
+                currCanvas.height = dimensions.height * devicePixelRatio;
+
+                const ratio =
+                    Math.min(
+                        currCanvas.clientWidth / originalWidth,
+                        currCanvas.clientHeight / originalHeight
+                    ) * devicePixelRatio;
+
+                context.scale(ratio, ratio);
+            }
+        }
+    }, [
+        tileSize,
+        numOfTilesX,
+        numOfTilesY,
+        canvasProps.width,
+        canvasProps.height,
+    ]);
+
     return (
         <canvas
+            style={{ objectFit: "contain" }}
             className={className}
             ref={canvasRef}
             {...canvasProps}
@@ -90,8 +144,8 @@ export const SnakeGame = ({
 SnakeGame.defaultProps = {
     smoothAnimations: false,
     speed: 25,
+    tileSize: 20,
     multiplier: 3,
-    tileSize: 25,
     numOfTilesX: 32,
     numOfTilesY: 18,
     tileColor: "#ebedf0",

@@ -444,11 +444,12 @@ export const useSnakeGame = (
 
     const moveSnake = useCallback(
         (e: KeyboardEvent<HTMLCanvasElement>) => {
+            const key = e.key;
             e.preventDefault();
-            if (KEY_TO_DIRECTION_MAPPINGS.hasOwnProperty(e.key)) {
+            if (KEY_TO_DIRECTION_MAPPINGS.hasOwnProperty(key)) {
                 setGameState((prevGameState) => {
                     const prevDirection = prevGameState.direction;
-                    const nextDirection = KEY_TO_DIRECTION_MAPPINGS[e.key];
+                    const nextDirection = KEY_TO_DIRECTION_MAPPINGS[key];
 
                     if (
                         prevDirection &&
@@ -472,7 +473,7 @@ export const useSnakeGame = (
                         ? prevGameState
                         : {
                               ...prevGameState,
-                              direction: KEY_TO_DIRECTION_MAPPINGS[e.key],
+                              direction: KEY_TO_DIRECTION_MAPPINGS[key],
                           };
                 });
             }
